@@ -1,0 +1,21 @@
+- hosts: vpn_servers
+  become: yes
+  tasks:
+    - name: Install OpenVPN
+      apt:
+        name: openvpn
+        state: present
+
+    - name: Configure the OpenVPN VPN server
+      template:
+        src: openvpn.conf.j2
+        dest: /etc/openvpn/server.conf
+        owner: root
+        group: root
+        mode: 0600
+        
+    - name: Enable and start OpenVPN service
+      systemd:
+        name: openvpn@server
+        enabled: yes
+        state: started
